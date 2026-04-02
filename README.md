@@ -1,91 +1,264 @@
-# 🚀 JSP 커뮤니티
-> 회원 관리와 게시판 기능을 갖춘 JSP 기반 웹 애플리케이션
+# JSP 커뮤니티 게시판
 
-## 📘 개요 (Overview)
-본 프로젝트는 **Servlet과 JSP를 이용한 MVC 패턴 기반의 웹 애플리케이션**으로,  
-회원 관리(로그인·회원가입) 및 게시판 CRUD 기능을 중심으로 구성되었습니다.  
-Oracle 데이터베이스와 JDBC를 통해 데이터 연동을 수행하며,  
-Eclipse + Tomcat 환경에서 실행 가능합니다.
+Servlet + JSP MVC 패턴으로 구현한 커뮤니티 게시판 학습 프로젝트입니다.  
+회원 관리(가입·로그인·정보수정·탈퇴)가 완성되어 있으며, 게시판 CRUD 뷰 골격이 준비되어 있습니다.
 
-## 🧱 기술 스택 (Tech Stack)
-| 구분 | 사용 기술 |
-|------|------------|
-| Frontend | HTML, CSS, JavaScript, JSP |
-| Backend | Java (Servlet, JDBC)|
-| Server| Apache Tomcat |
-| Database | Oracle |
-| Tools | Eclipse, Git, GitHub |
+---
 
-## 🛠️ 설치 및 실행 (Installation & Run)
-# 1. 프로젝트 클론
-git clone https://github.com/wonguwon/JSP_Board_Project.git
+## 기술 스택
 
-# 2. 이클립스(Eclipse)에서 Import
-- File > Import > Existing Projects into Workspace
-- 복제한 프로젝트 폴더 선택 후 Import
+| 분류 | 기술 |
+|------|------|
+| Frontend | HTML, CSS, JavaScript, JSP, JSTL/EL |
+| Backend | Java 17, Servlet (Jakarta EE 6) |
+| Server | Apache Tomcat 11 |
+| Database | Oracle XE |
+| Libraries | Lombok, Bootstrap 5.3.3 |
+| Build/IDE | Eclipse |
 
-# 3. 데이터베이스(Oracle) 설정
-- Oracle 실행 후 데이터베이스 및 테이블 생성
-- src/main/webapp/WEB-INF/classes/sql 폴더 내 SQL 스크립트 실행
-- JDBC 연결 정보(application.properties 또는 JDBCTemplate.java) 수정
+---
 
-# 4. Tomcat 서버 설정
-- Eclipse > Servers > New > Server > Apache Tomcat 선택
-- 프로젝트를 서버에 Add 후 실행
+## 프로젝트 구조
 
-# 5. 웹 애플리케이션 실행
-- 브라우저에서 접속
-http://localhost:8080/jsp
+```
+src/
+└── main/
+    ├── java/
+    │   ├── com/kh/jsp/
+    │   │   ├── common/
+    │   │   │   └── JDBCTemplate.java          # JDBC 연결 유틸 (static 메서드)
+    │   │   ├── controller/
+    │   │   │   ├── member/
+    │   │   │   │   ├── EnrollFormController.java  # GET /enrollForm.me
+    │   │   │   │   ├── InsertController.java      # POST /insert.me (회원가입 처리)
+    │   │   │   │   ├── LoginController.java       # POST /login.me
+    │   │   │   │   ├── LogoutController.java      # GET /logout.me
+    │   │   │   │   ├── MyPageController.java      # GET /myPage.me
+    │   │   │   │   ├── UpdateController.java      # POST /update.me
+    │   │   │   │   ├── UpdatePwdController.java   # POST /updatePwd.me
+    │   │   │   │   └── DeleteController.java      # POST /delete.me
+    │   │   │   └── board/
+    │   │   │       └── ListController.java        # GET /list.bo (목록 조회)
+    │   │   ├── model/
+    │   │   │   ├── dao/
+    │   │   │   │   └── MemberDao.java             # 회원 DB 접근 (PreparedStatement)
+    │   │   │   └── vo/
+    │   │   │       └── Member.java                # 회원 VO (Lombok)
+    │   │   └── service/
+    │   │       └── MemberService.java             # 회원 비즈니스 로직 + 트랜잭션
+    │   └── db/
+    │       ├── driver/
+    │       │   └── driver.properties              # Oracle 연결 정보
+    │       └── sql/
+    │           └── member-mapper.xml              # SQL 쿼리 (Properties XML)
+    └── webapp/
+        ├── index.jsp                              # 메인 페이지
+        └── views/
+            ├── common/
+            │   ├── menubar.jsp                    # 공통 헤더 (로그인/네비게이션)
+            │   └── error.jsp                      # 에러 페이지
+            ├── member/
+            │   ├── enrollForm.jsp                 # 회원가입 폼
+            │   └── myPage.jsp                     # 마이페이지 (정보수정·비번변경·탈퇴)
+            └── board/
+                ├── listView.jsp                   # 게시글 목록
+                ├── enrollForm.jsp                 # 게시글 작성 폼
+                ├── detailView.jsp                 # 게시글 상세보기
+                └── updateForm.jsp                 # 게시글 수정 폼
+```
 
-## 📂 프로젝트 구조 (Directory Structure)
-<pre>
-project/
- ├── src/
- │   ├── com/project/controller/     # Servlet 컨트롤러
- │   ├── com/project/model/dao/      # 데이터 접근 로직 (DAO)
- │   ├── com/project/model/vo/       # VO (Value Object)
- │   ├── com/project/service/        # 비즈니스 로직
- │   └── com/project/common/         # 공용 유틸 (JDBCTemplate 등)
- ├── webapp/
- │   ├── WEB-INF/
- │   │   ├── views/                  # JSP 뷰 페이지
- │   │   └── web.xml                 # 배포 서술자
- │   ├── resources/                  # CSS, JS, 이미지
- │   └── index.jsp                   # 메인 페이지
- └── README.md
-</pre>
+---
 
-## 🌟 주요 기능 (Key Features)
-- 회원가입 / 로그인 / 로그아웃 기능
-- 게시글 등록, 조회, 수정, 삭제 (CRUD)
-- Oracle DB 연동을 통한 데이터 관리
-- MVC 패턴 기반 구조로 모듈화된 개발
-- JSP include를 통한 공통 레이아웃 구성
+## 실행 방법
 
-## 📸 화면 미리보기 (Preview)
+### 1. Oracle DB 설정
 
-| 기능 | 미리보기 |
-|------|-----------|
-| 로그인 화면 | ![Login Page](./assets/login.gif) |
-| 회원가입 화면 | ![Register Page](./assets/register.png) |
-| 게시판 목록 | ![Board List](./assets/board-list.jpg) |
-| 게시글 작성 | ![Post Write](./assets/post-write.gif) |
+```sql
+-- 사용자 생성
+CREATE USER c##jsp IDENTIFIED BY jsp;
+GRANT CONNECT, RESOURCE, CREATE SESSION TO c##jsp;
 
+-- MEMBER 테이블 생성
+CREATE TABLE MEMBER (
+    MEMBER_NO   NUMBER          PRIMARY KEY,
+    MEMBER_ID   VARCHAR2(20)    UNIQUE NOT NULL,
+    MEMBER_PWD  VARCHAR2(20)    NOT NULL,
+    MEMBER_NAME VARCHAR2(20)    NOT NULL,
+    PHONE       VARCHAR2(15),
+    EMAIL       VARCHAR2(50),
+    ADDRESS     VARCHAR2(100),
+    INTEREST    VARCHAR2(200),
+    ENROLL_DATE DATE            DEFAULT SYSDATE,
+    MODIFY_DATE DATE            DEFAULT SYSDATE,
+    STATUS      VARCHAR2(1)     DEFAULT 'Y' CHECK(STATUS IN ('Y','N'))
+);
 
-## 💡 학습 포인트 (Learning Points)
+-- 시퀀스 생성
+CREATE SEQUENCE SEQ_MNO
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE;
+```
 
-- JSP & Servlet 기반 MVC 구조 설계 방법 학습
-- JDBC를 통한 데이터베이스 연결 및 SQL 처리 로직 구현
-- Tomcat 서버를 활용한 배포 및 실행 환경 이해
-- JSP 내 JSTL / EL 사용으로 동적 페이지 구현
+### 2. Eclipse에서 프로젝트 Import
 
+```
+File > Import > Existing Projects into Workspace
+복제한 폴더 선택 후 Import
+```
 
-## 팀원 소개(협업시 추가)
+### 3. JDBC 연결 정보 수정
 
-| 이름 | 포지션 | Contact |
-| --- | --- | --- |
-| 최지원 | AI | a1@gmail.com |
-| 최지투 | BE | a1@gmail.com |
-| 최지삼 | FE | a1@gmail.com |
-| 최지사 | FE | a1@gmail.com |
-| 최지오 | FE | a1@gmail.com |
+`src/main/java/db/driver/driver.properties` 파일을 열어 실제 연결 정보로 수정합니다.
+
+```properties
+driver=oracle.jdbc.driver.OracleDriver
+url=jdbc:oracle:thin:@localhost:1521:xe
+username=c##jsp
+password=jsp
+```
+
+### 4. Tomcat 서버 실행
+
+```
+Eclipse > Servers > New Server > Apache Tomcat 11
+프로젝트 Add > Start
+브라우저: http://localhost:8080/JSP_Board_Project
+```
+
+---
+
+## URL 매핑
+
+### 회원 (*.me)
+
+| URL | HTTP | 설명 |
+|-----|------|------|
+| `/enrollForm.me` | GET | 회원가입 폼 |
+| `/insert.me` | POST | 회원가입 처리 |
+| `/login.me` | POST | 로그인 |
+| `/logout.me` | GET | 로그아웃 |
+| `/myPage.me` | GET | 마이페이지 |
+| `/update.me` | POST | 회원 정보 수정 |
+| `/updatePwd.me` | POST | 비밀번호 변경 |
+| `/delete.me` | POST | 회원 탈퇴 (소프트 삭제) |
+
+### 게시판 (*.bo)
+
+| URL | HTTP | 설명 |
+|-----|------|------|
+| `/list.bo` | GET | 게시글 목록 조회 |
+| `/enrollBoardForm.bo` | GET | 게시글 작성 폼 (미구현) |
+| `/insertBoard.bo` | POST | 게시글 등록 (미구현) |
+| `/detailBoard.bo` | GET | 게시글 상세 조회 (미구현) |
+| `/updateBoardForm.bo` | GET | 게시글 수정 폼 (미구현) |
+| `/updateBoard.bo` | POST | 게시글 수정 처리 (미구현) |
+| `/deleteBoard.bo` | GET | 게시글 삭제 (미구현) |
+
+---
+
+## 구현 현황
+
+| 기능 | 상태 |
+|------|------|
+| 회원가입 (이메일·전화·관심사) | ✅ 완료 |
+| 로그인 / 로그아웃 | ✅ 완료 |
+| 마이페이지 (정보수정) | ✅ 완료 |
+| 비밀번호 변경 | ✅ 완료 |
+| 회원 탈퇴 (소프트 삭제) | ✅ 완료 |
+| 게시글 목록 뷰 | ✅ HTML 완료 |
+| 게시글 작성 뷰 | ✅ HTML 완료 |
+| 게시글 상세 뷰 | ✅ HTML 완료 |
+| 게시글 수정 뷰 | ✅ HTML 완료 |
+| 게시판 CRUD 백엔드 | ⬜ 미구현 (학습 실습 영역) |
+
+---
+
+## 학습 포인트
+
+### MVC 패턴
+```
+요청 → Servlet(Controller) → Service(비즈니스 로직) → DAO(DB) → 응답 JSP(View)
+```
+
+### Forward vs Redirect
+```java
+// Forward: URL 유지, request 속성 전달 가능 (실패 시 에러 페이지)
+request.getRequestDispatcher("views/common/error.jsp").forward(request, response);
+
+// Redirect: URL 변경, 새로운 요청 (성공 후 페이지 이동)
+response.sendRedirect(request.getContextPath());
+```
+
+### JDBC 트랜잭션 패턴
+```java
+Connection conn = JDBCTemplate.getConnection(); // autoCommit=false
+int result = dao.insertMember(m, conn);
+if (result > 0) {
+    JDBCTemplate.commit(conn);
+} else {
+    JDBCTemplate.rollback(conn);
+}
+JDBCTemplate.close(conn);
+```
+
+### SQL 쿼리 외부화 (member-mapper.xml)
+```xml
+<!-- SQL을 Java 코드에서 분리하여 XML에 관리 -->
+<entry key="insertMember">
+    INSERT INTO MEMBER (MEMBER_ID, MEMBER_PWD, ...) VALUES (?, ?, ...)
+</entry>
+```
+
+### Session 활용
+```java
+// 로그인 성공
+session.setAttribute("loginMember", member);
+
+// JSP에서 EL로 접근
+${loginMember.memberName}님 환영합니다.
+
+// 로그아웃
+session.removeAttribute("loginMember");
+```
+
+### JSTL 조건부 렌더링
+```jsp
+<c:choose>
+    <c:when test="${empty sessionScope.loginMember}">
+        <!-- 로그인 전 UI -->
+    </c:when>
+    <c:otherwise>
+        <!-- 로그인 후 UI -->
+    </c:otherwise>
+</c:choose>
+```
+
+---
+
+## 게시판 실습 가이드
+
+게시판 백엔드는 학습 목적으로 미구현 상태입니다.  
+아래 순서로 구현해보세요.
+
+1. **BOARD 테이블 설계 및 생성**
+   - 게시글번호, 카테고리, 제목, 내용, 작성자ID(FK), 조회수, 작성일, 수정일, 상태
+
+2. **Board VO 작성** (`model/vo/Board.java`)
+
+3. **board-mapper.xml 작성** — SELECT / INSERT / UPDATE / DELETE SQL
+
+4. **BoardDao 작성** (`model/dao/BoardDao.java`) — PreparedStatement 활용
+
+5. **BoardService 작성** (`service/BoardService.java`) — 트랜잭션 관리
+
+6. **Servlet 컨트롤러 작성** (`controller/board/`)
+   - `ListController`: DB에서 목록 조회 후 listView.jsp에 전달
+   - `InsertBoardController`: 게시글 저장
+   - `DetailController`: 단건 조회 + 조회수 증가
+   - `UpdateBoardController`: 수정 처리
+   - `DeleteBoardController`: 소프트 삭제
+
+7. **listView.jsp 수정** — `<c:forEach>`로 게시글 목록 동적 렌더링
+
+8. **detailView.jsp 수정** — `${board.title}` 등 EL로 데이터 출력

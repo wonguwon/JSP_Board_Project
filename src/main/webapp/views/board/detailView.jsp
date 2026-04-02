@@ -121,7 +121,7 @@
 		}
 	</style>
 </head>
-<body onload="init(${board.boardNo})">
+<body>
 	<jsp:include page="/views/common/menubar.jsp" />
 
 	<div class="board-container">
@@ -158,9 +158,9 @@
 			</table>
 
 			<div class="button-group">
-				<a class="btn btn-primary">목록가기</a>
-				<a class="btn btn-warning">수정하기</a>
-				<a class="btn btn-danger">삭제하기</a>
+				<a class="btn btn-primary" href="${pageContext.request.contextPath}/list.bo">목록가기</a>
+				<a class="btn btn-warning" href="${pageContext.request.contextPath}/updateBoardForm.bo?boardNo=${board.boardNo}">수정하기</a>
+				<a class="btn btn-danger" href="${pageContext.request.contextPath}/deleteBoard.bo?boardNo=${board.boardNo}">삭제하기</a>
 			</div>
 		</div>
 
